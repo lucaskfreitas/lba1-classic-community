@@ -3,11 +3,15 @@
 
 		.model  SMALL, SYSCALL
 
-		include P_define.ash
+		include P_DEFINE.ash
 
 		.data
 
-		include lib_sys\lib_sys.ash
+IFDEF LINUX
+		include	../LIB_SYS/LIB_SYS.ash
+ELSE
+		include	lib_sys\lib_sys.ash
+ENDIF
 
 Comment @
 

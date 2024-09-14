@@ -19,7 +19,18 @@ WL = f:\compil\watcom10\binb\wlib
 
 CC = wcc386
 WL = wlib
+
+!ifdef __LINUX__
+PRNTITRE = :
+DEL = rm
+ASM = uasm
+AFLAGS = -Cx -c -W0 -Sa -DNoLanguage=SYSCALL -omf -Fo$*.obj -DLINUX -Zne
+!else
+PRNTITRE = PRNTITRE
+DEL = del
 ASM = ml
+AFLAGS = /Cx /c /W0 /Sa /DNoLanguage=SYSCALL /omf
+!endif
 
 !ifeq WATCOM9 yes
 CFLAGS = /oeaxt /zp2 /4s /zq /s /DWATCOM9
@@ -27,8 +38,7 @@ CFLAGS = /oeaxt /zp2 /4s /zq /s /DWATCOM9
 CFLAGS = /onatx /oh /oi /ei /zp2 /6s /fp6 /s /wx /wcd=131 /wcd=202 /wcd=303 /wcd=308
 !endif
 LFLAGS = /c /q /b /n
-#AFLAGS = /m2 /mx /z /p /q /t /jMASM51 /jQUIRKS
-AFLAGS = /Cx /c /W0 /Sa /DNoLanguage=SYSCALL /omf
+
 
 OBJETS1  = P_SINTAB.obj P_ANIM.obj
 OBJETS2  = P_OB_ISO.obj P_TRIGO.obj
@@ -41,7 +51,7 @@ LIB      = LB9_3D
 LIB      = LIB_3D
 !endif
 
-$(LIB).LIB: $(OBJETS1) $(OBJETS2) $(OBJETS3) $(OBJETS4)
+$(LIB).lib: $(OBJETS1) $(OBJETS2) $(OBJETS3) $(OBJETS4)
 
 	@echo $(OBJETS1) > clibmak.rsp
 	@echo $(OBJETS2) >> clibmak.rsp
@@ -50,13 +60,13 @@ $(LIB).LIB: $(OBJETS1) $(OBJETS2) $(OBJETS3) $(OBJETS4)
 
 
 	@$(WL) $(WLIBFLAGS) $(LIB) @clibmak.rsp
-	@del clibmak.rsp
-	@prntitre G "$(LIB)"
+	@$(DEL) clibmak.rsp
+	@$(PRNTITRE) G "$(LIB)"
 
 .asm.obj:
-	@PRNTITRE M "$*.ASM"
-	@$(ASM) $(AFLAGS) $*.ASM
+	@$(PRNTITRE) M "$*.asm"
+	@$(ASM) $(AFLAGS) $*.asm
 
 .c.obj:
-	@PRNTITRE M "$*.C"
+	@$(PRNTITRE) M "$*.c"
 	@$(CC) $(WCFLAGS) $*
